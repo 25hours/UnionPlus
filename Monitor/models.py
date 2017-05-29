@@ -1,5 +1,5 @@
 from django.db import models
-from monitor import auth
+from Monitor import auth
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 
@@ -54,7 +54,7 @@ class Service(models.Model):    # cpu，内存，io等
     name = models.CharField(u'服务名称',max_length=64,unique=True)
     interval = models.IntegerField(u'监控间隔',default=60)
     plugin_name = models.CharField(u'插件名',max_length=64,default='n/a')
-    items = models.ManyToManyField('ServiceIndex',verbose_name=u"指标列表",blank=True)  #如CPU的idle，iowait等指标项
+    items = models.ManyToManyField('ServiceIndex',verbose_name=u"指标列表",blank=True)  # 如CPU的idle，iowait等指标项
     has_sub_service = models.BooleanField(default=False,help_text=u"如果一个服务还有独立的子服务 ,选择这个,比如 网卡服务有多个独立的子网卡")     #如果一个服务还有独立的子服务 ,选择这个,比如 网卡服务有多个独立的子网卡
     memo = models.CharField(u"备注",max_length=128,blank=True,null=True)
 
@@ -65,18 +65,22 @@ class Service(models.Model):    # cpu，内存，io等
 
 class Template(models.Model):
     name = models.CharField(u'模版名称',max_length=64,unique=True)
-    services = models.ManyToManyField('Service',verbose_name=u"服务列表")   # cpu，内存，io等
+    services = models.ManyToManyField('Service',verbose_name=u"服务列表")   # 监控的服务，如cpu，内存，io等
     triggers = models.ManyToManyField('Trigger',verbose_name=u"触发器列表",blank=True)
     def __str__(self):
         return self.name
 
 
-class TriggerExpression(models.Model):  # 触发器表达式
+class TriggerExpression(models.Model):  # 触发器表达式，反向关联Trigger
     trigger = models.ForeignKey('Trigger',verbose_name=u"所属触发器")
     service = models.ForeignKey(Service,verbose_name=u"关联服务")   # CPU等
     service_index = models.ForeignKey(ServiceIndex,verbose_name=u"关联服务指标")  # CPU的idle，iowait等
     specified_index_key = models.CharField(verbose_name=u"只监控专门指定的指标key",max_length=64,blank=True,null=True)
-    operator_type_choices = (('eq','='),('lt','<'),('gt','>'))
+    operator_type_choices = (
+        ('eq','='),
+        ('lt','<'),
+        ('gt','>'),
+    )
     operator_type = models.CharField(u"运算符",choices=operator_type_choices,max_length=32)
     data_calc_type_choices = (  # 对应后台数据处理函数
         ('avg','Average'),
@@ -98,7 +102,7 @@ class TriggerExpression(models.Model):  # 触发器表达式
     class Meta:
         pass #unique_together = ('trigger_id','service')
 
-class Trigger(models.Model):    #总触发器,触发时有具体触发器表达式指标
+class Trigger(models.Model):    #总触发器,触发时有具体触发器表达式指标，此处没有关联具体触发条件，定义TriggerExpression做反向关联
     name = models.CharField(u'触发器名称',max_length=64)
     severity_choices = (
         (1,'Information'),
