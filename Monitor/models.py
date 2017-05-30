@@ -1,8 +1,5 @@
 from django.db import models
-from Monitor import auth
-from django.utils.translation import ugettext_lazy as _
-from django.utils.safestring import mark_safe
-
+from UserAuthentication.models import UserProfile
 # Create your models here.
 
 class Host(models.Model):
@@ -149,7 +146,7 @@ class ActionOperation(models.Model):    # 告警升级，通过触发次数判�
         ('script','RunScript'),
     )
     action_type = models.CharField(u"动作类型",choices=action_type_choices,default='email',max_length=64)
-    notifiers= models.ManyToManyField('UserProfile',verbose_name=u"通知对象",blank=True)
+    notifiers= models.ManyToManyField(UserProfile,verbose_name=u"通知对象",blank=True)
     _msg_format = '''Host({hostname},{ip}) service({service_name}) has issue,msg:{msg}'''
 
     msg_format = models.TextField(u"消息格式",default=_msg_format)
@@ -181,72 +178,3 @@ class EventLog(models.Model):
 
     def __str__(self):
         return "host%s  %s" %(self.host , self.log)
-
-class UserProfile(auth.AbstractBaseUser, auth.PermissionsMixin):
-    email = models.EmailField(
-        verbose_name='email address',
-        max_length=255,
-        unique=True,
-
-    )
-    password = models.CharField(_('password'), max_length=128,
-                                help_text=mark_safe('''<a class='btn-link' href='password'>重置密码</a>'''))
-
-    phone = models.BigIntegerField(blank=True,null=True)
-    weixin = models.CharField(max_length=64,blank=True,null=True)
-
-    is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
-    is_staff = models.BooleanField(
-        verbose_name='staff status',
-        default=True,
-        help_text='Designates whether the user can log into this admin site.',
-    )
-    name = models.CharField(max_length=32)
-    #role = models.ForeignKey("Role",verbose_name="权限角色")
-
-    memo = models.TextField('备注', blank=True, null=True, default=None)
-    date_joined = models.DateTimeField(blank=True, null=True, auto_now_add=True)
-
-    USERNAME_FIELD = 'email'
-    # REQUIRED_FIELDS = ['name','token','department','tel','mobile','memo']
-    REQUIRED_FIELDS = ['name']
-
-    def get_full_name(self):
-        # The user is identified by their email address
-        return self.email
-
-    def get_short_name(self):
-        # The user is identified by their email address
-        return self.email
-
-    def __str__(self):  # __str__ on Python 2
-        return self.email
-
-    # def has_perm(self, perm, obj=None):
-    #     "Does the user have a specific permission?"
-    #     # Simplest possible answer: Yes, always
-    #     return True
-    def has_perms(self, perm, obj=None):
-        "Does the user have a specific permission?"
-        # Simplest possible answer: Yes, always
-        return True
-
-    def has_module_perms(self, app_label):
-        "Does the user have permissions to view the app `app_label`?"
-        # Simplest possible answer: Yes, always
-        return True
-
-
-    @property
-    def is_superuser(self):
-        "Is the user a member of staff?"
-        # Simplest possible answer: All admins are staff
-        return self.is_admin
-
-
-    objects = auth.UserManager()
-
-    class Meta:
-        verbose_name = '账户'
-        verbose_name_plural = '账户'
