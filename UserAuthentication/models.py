@@ -4,7 +4,7 @@ from django.contrib.auth.models import (BaseUserManager,AbstractBaseUser)
 class UserManager(BaseUserManager):
     def create_user(self, email, name, password=None):
         if not email:
-            raise ValueError('Users must have an email address')
+            raise ValueError('必须输入邮件地址')
 
         user = self.model(
             email = self.normalize_email(email),
@@ -28,9 +28,9 @@ class UserProfile(AbstractBaseUser):
         unique=True,
     )
     # date_of_birth = models.DateField()
-    name = models.CharField(max_length=32)
+    name = models.CharField(u'用户名',max_length=32)
     is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
+    is_admin = models.BooleanField(u'管理员',default=False)
 
     objects = UserManager()
 

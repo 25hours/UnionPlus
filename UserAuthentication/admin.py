@@ -10,8 +10,8 @@ from UserAuthentication.models import UserProfile
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
+    password1 = forms.CharField(label='密码', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='密码确认', widget=forms.PasswordInput)
 
     class Meta:
         model = UserProfile
@@ -22,7 +22,7 @@ class UserCreationForm(forms.ModelForm):
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
-            raise forms.ValidationError("Passwords don't match")
+            raise forms.ValidationError("密码不匹配")
         return password2
 
     def save(self, commit=True):
