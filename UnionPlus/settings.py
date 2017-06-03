@@ -108,7 +108,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -123,3 +124,21 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'UserAuthentication.UserProfile'
+
+#用于监控
+REDIS_CONN = {
+    'HOST': 'localhost',
+    'PORT': 6379,
+    'PASSWD':''
+}
+
+#all the triggers will be published to this channel
+TRIGGER_CHAN = 'trigger_event_channel'
+#all latest monitor data will save under this key in redis
+
+STATUS_DATA_OPTIMIZATION = {
+    'latest':[0,600], #存储真实数据时间间隔0,存储600个点
+    '10mins':[600,600], #4days
+    '30mins':[1800,600],#14days
+    '60mins':[3600,600], #25days
+}
