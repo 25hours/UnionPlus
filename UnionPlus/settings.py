@@ -142,3 +142,14 @@ STATUS_DATA_OPTIMIZATION = {
     '30mins':[1800,600],#14days
     '60mins':[3600,600], #25days
 }
+
+REPORT_LATE_TOLERANCE_TIME = 10 #allow service report late than monitor interval no more than defined seconds.
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_USE_TLS = False
+EMAIL_HOST = 'smtp.exmail.qq.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'qiaojianlong@oldboyedu.com'
+EMAIL_HOST_PASSWORD = 'QJL171012qjl'
+DEFAULT_FROM_EMAIL = '老男孩IT教育<qiaojianlong@oldboyedu.com>'

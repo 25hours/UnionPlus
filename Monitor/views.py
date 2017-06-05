@@ -2,9 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render,HttpResponse
 import json,time
 from django.views.decorators.csrf import csrf_exempt
-
 from UnionPlus import settings
-
 from Monitor.serializer import  ClientHandler,get_host_triggers
 from Monitor.backends import redis_conn
 from Monitor.backends import data_optimization
@@ -18,21 +16,21 @@ REDIS_OBJ = redis_conn.redis_conn(settings)
 
 def dashboard(request):
 
-    return render(request,'monitor/dashboard.html')
+    return render(request,'Monitor/dashboard.html')
 def triggers(request):
 
-    return render(request,'monitor/triggers.html')
+    return render(request,'Monitor/triggers.html')
 def index(request):
-    return render(request,'monitor/index.html')
+    return render(request,'Monitor/index.html')
 
 def hosts(request):
     host_list = models.Host.objects.all()
     print("hosts:",host_list)
-    return render(request,'monitor/hosts.html',{'host_list':host_list})
+    return render(request,'Monitor/hosts.html',{'host_list':host_list})
 
 def host_detail(request,host_id):
     host_obj = models.Host.objects.get(id=host_id)
-    return render(request,'monitor/host_detail.html',{'host_obj':host_obj})
+    return render(request,'Monitor/host_detail.html',{'host_obj':host_obj})
 
 def host_detail_old(request,host_id):
     host_obj = models.Host.objects.get(id=host_id)
@@ -154,4 +152,4 @@ def trigger_list(request):
     host_obj = models.Host.objects.get(id=host_id)
 
     alert_list = host_obj.eventlog_set.all().order_by('-date')
-    return render(request,'monitor/trigger_list.html',locals())
+    return render(request,'Monitor/trigger_list.html',locals())
